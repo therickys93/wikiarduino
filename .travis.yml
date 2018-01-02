@@ -1,0 +1,10 @@
+language: generic
+sudo: required
+services:
+- docker
+install:
+- curl -sL -O https://github.com/itjustworksteam/codeci/releases/download/0.2.1.65_go1.7.1/linux_amd64.tar.gz
+- tar xvf linux_amd64.tar.gz
+- ./codeci --version
+script:
+- ./codeci
