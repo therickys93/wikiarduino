@@ -5,7 +5,6 @@ services:
 install:
 - curl -sL -O https://github.com/itjustworksteam/codeci/releases/download/0.2.1.65_go1.7.1/linux_amd64.tar.gz
 - tar xvf linux_amd64.tar.gz
-- mv codeci /usr/local/bin/
-- ls -al
+- ./codeci --version
 script:
 - echo "Hello World"
