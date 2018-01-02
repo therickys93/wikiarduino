@@ -2,12 +2,9 @@
 #include <Ethernet.h>
 #include <redisClient.h>
 
-#define BUFFER_LENGTH 100
-#define NUMBER_OF_LED 2
-
-// led collegati al pin 2 e al 4
-int red_pin   = 2;
-int green_pin = 4;
+#define BUFFER_LENGTH   100
+#define NUMBER_OF_LED   8
+#define LED_START_INDEX 2
 
 byte arduino_mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 byte arduino_ip[]  = {192, 168, 15, 210};
@@ -21,12 +18,13 @@ char buffer[BUFFER_LENGTH];
 void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
   Serial.begin(57600);
-  delay(5000);
+  delay(1000);
   Serial.print("WikiArduino partito @ ");
   Serial.println(Ethernet.localIP());
 
-  pinMode(red_pin, OUTPUT);
-  pinMode(green_pin, OUTPUT);
+  for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
+    pinMode(index, OUTPUT);
+  }
   
   Serial.println("Pronto");
   if(client.connect()){
@@ -58,18 +56,15 @@ void loop() {
   Serial.println(buffer);
   if(strlen(buffer) > 0){
     if(strlen(buffer) == NUMBER_OF_LED){
-      char pin2 = buffer[0];
-      char pin4 = buffer[1];
-      if(pin2 == '0'){
-        digitalWrite(red_pin, LOW); 
-      } else if(pin2 == '1'){
-        digitalWrite(red_pin, HIGH);
-      } else if(pin4 == '0'){
-        digitalWrite(green_pin, LOW);
-      } else if(pin4 == '1'){
-        digitalWrite(green_pin, HIGH);
-      } else {
-        Serial.println("no right value");
+      for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
+        char value = buffer[index - LED_START_INDEX];
+        if(value == '0'){
+          digitalWrite(index, LOW);
+        } else if(value == '1'){
+          digitalWrite(index, HIGH);
+        } else {
+          Serial.println("no right value");
+        }
       }
     } else {
       Serial.println("string not equals to led");
