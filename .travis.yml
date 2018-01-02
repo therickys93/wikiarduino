@@ -1,6 +1,6 @@
 language: generic
 install:
-- curl -sL https://github.com/itjustworksteam/codeci/releases/download/0.2.1.65_go1.7.1/linux_amd64.tar.gz
+- curl -sL -O https://github.com/itjustworksteam/codeci/releases/download/0.2.1.65_go1.7.1/linux_amd64.tar.gz
 - ls -al
 script:
 - echo "Hello World"
