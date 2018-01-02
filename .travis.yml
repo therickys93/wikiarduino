@@ -7,4 +7,4 @@ install:
 - tar xvf linux_amd64.tar.gz
 - ./codeci --version
 script:
-- echo "Hello World"
+- ./codeci

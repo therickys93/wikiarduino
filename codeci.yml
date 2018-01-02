@@ -1,0 +1,4 @@
+os: ubuntu14
+language: arduino
+script:
+  - arduino-builder -libraries ./lib -verbose -build-options-file $ARDUINO_PATH/build.options.json src/sketch.ino
