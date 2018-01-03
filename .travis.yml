@@ -9,3 +9,13 @@ install:
 - ./codeci --version
 script:
 - ./codeci
+- sh set_tags.sh
+deploy:
+  provider: releases
+  file_glob: "true"
+  skip_cleanup: true
+  api_key:
+    secure: C/QhC2YsWBR7gGVMqwD/bJjnV1rXPG1riLUHg3GipKQgyrClDtFPLCKNSpZ4tfeaUfaxBuDF2f+ahqhT+eLAvaIsq2NrActeNK7fk5r7xA6fDuG3QisDo+cT42Y9vZKooNMBvHroZd/VgoyJPhap+EBgQAbLjrDVEWEMySPZhdqq9jTVzYH28UBEDijlMtuKLTuwTFBT5s2kzp/5/Bbw2lY5WY0S0/hnMkkK5OTbud0L1rYLP0e8ZMtrgtEtO+sLt3ChddB4sg3ctsKlaSBa/XZLTdRtxl4vvi5pQj3/hTPwJDLdieEuUjAz4dbYMnEAZDtb+XMkz+sDo5QbJ143Db8PBH2wahFmV7lG30KcZsxmsjgKpi+eDRr7lnMd6d/WmGnAh3wDspPj4flGwbsyo3uRegmQSU4tKaiBQmKkKOck/HuIuqNBGnBTcwlFd49Zc8kZQOh4W4oYeYt8ObRghOW2QJNq3hJHuG3vnB1SHgJjfICR0JuqZx1rFeMHW9DqkgZDSI57Jb3n/mmgIeI/p6259g91c5cEeWwkx2jon9wErH5/S7oY6zWEiJ3NjDr7PplibCrGv1Krk7Oy/uTWgRtbTSD+XagyTgdA9T22aKX6oKMCrgLemDfZOXRS1FT+vNYNpRvXEDeIWdGg98GQ7e4ElI02kbGqZ79iPJQDEok=
+  on:
+    repo: therickys93/wikiarduino
+    branch: master
