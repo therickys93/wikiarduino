@@ -47,6 +47,7 @@ void setup() {
 }
 
 void loop() {
+  delay(500);
   if(client.GET(key)){
     Serial.println("GET() -- ok");
   } else {
