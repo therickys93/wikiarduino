@@ -72,6 +72,15 @@ uint8_t  RedisClient::startHSET(char* key) {
     sendArg(key);
 }
 
+uint8_t  RedisClient::startSET(char *key) {
+    connect();
+
+    _resType = RedisResult_NOTRECEIVED;
+    startCmd(4);
+    sendArg("SET");
+    sendArg(key);
+}
+
 uint8_t RedisClient::endPUBLISH(uint16_t *subscribers) {
     if (resultType() == RedisResult_INTEGER) {
         *subscribers = resultInt();
@@ -90,6 +99,15 @@ uint8_t RedisClient::endPUBLISH() {
 uint8_t RedisClient::endHSET() {
     if (resultType() == RedisResult_INTEGER) {
         resultInt(); // throw away result
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+uint8_t RedisClient::endSET() {
+    if(resultType() == RedisResult_INTEGER) {
+        resultInt();
         return 1;
     } else {
         return 0;

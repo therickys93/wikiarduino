@@ -35,6 +35,7 @@ public:
     uint8_t startHSET(char* key);        // needs TWO arguments
     uint8_t startHSET(char* key, uint16_t index); // needs TWO arguments
     uint8_t startRPUSH(char* list);      // needs one argument
+    uint8_t startSET(char *key);
     
     
     // ... to send arguments for commands above
@@ -49,6 +50,7 @@ public:
     uint8_t endPUBLISH(uint16_t *subscribers);
     uint8_t endPUBLISH();
     uint8_t endHSET();
+    uint8_t endSET();
     uint8_t endRPUSH(uint16_t *listitems);
     uint8_t endRPUSH();
     

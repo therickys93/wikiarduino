@@ -63,6 +63,16 @@ void loop() {
           digitalWrite(index, LOW);
         } else if(value == '1'){
           digitalWrite(index, HIGH);
+        } else if(value == '2'){
+          digitalWrite(index, LOW);
+          delay(100);
+          digitalWrite(index, HIGH);
+          delay(500);
+          digitalWrite(index, LOW);
+          buffer[index - LED_START_INDEX] = '0';
+          client.startSET(key);
+          client.sendArg(buffer);
+          client.endSET();
         } else {
           Serial.println("no right value");
         }
