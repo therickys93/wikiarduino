@@ -19,7 +19,7 @@ void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
   Serial.begin(57600);
   delay(1000);
-  Serial.print("WikiArduino partito @ ");
+  Serial.print("WikiArduino in ascolto @ ");
   Serial.println(Ethernet.localIP());
 
   for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
