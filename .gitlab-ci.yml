@@ -1,0 +1,29 @@
+image: therickys93/ubuntu14arduino
+
+variables:
+  CHANNEL_NAME: "town-square"
+  TEAM_NAME: "wiki"
+  SERVER: "mattermost.wiki.home"
+
+stages:
+  - build
+  - mattermost
+
+building:
+  stage: build
+  artifacts:
+    name: "$CI_JOB_NAME"
+    paths:
+      - $CI_PROJECT_DIR/output-folder/src.*
+  script:
+    - mkdir $CI_PROJECT_DIR/output-folder/
+    - arduino-builder -libraries ./lib -verbose -build-path $CI_PROJECT_DIR/output-folder -build-options-file $ARDUINO_PATH/build.options.json src/src.ino
+
+mattermost:
+    image: therickys93/mattermost-notification
+    stage: mattermost
+    script:
+        - mattermost-notification -m $CI_COMMIT_MESSAGE -f $CI_PROJECT_DIR/output-folder/src.ino.hex -t ${TEAM_NAME} -c ${CHANNEL_NAME} -u ${SERVER}
+        - mattermost-notification -m "" -f $CI_PROJECT_DIR/output-folder/src.ino.eep -t ${TEAM_NAME} -c ${CHANNEL_NAME} -u ${SERVER}
+        - mattermost-notification -m "" -f $CI_PROJECT_DIR/output-folder/src.ino.elf -t ${TEAM_NAME} -c ${CHANNEL_NAME} -u ${SERVER}
+        - mattermost-notification -m "" -f $CI_PROJECT_DIR/output-folder/src.ino.with_bootloader.hex -t ${TEAM_NAME} -c ${CHANNEL_NAME} -u ${SERVER}
