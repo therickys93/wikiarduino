@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <redisClient.h>
+#include "version.h"
 
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
@@ -98,7 +99,15 @@ void loop() {
     Serial.println(command, DEC);
     switch(command){
       case 'v':
-        Serial.println("WikiArduino: (1.5.65_gff34fd) <- Esempio");
+        Serial.print("WikiArduino: (");
+        Serial.print(MAJOR, DEC);
+        Serial.print(".");
+        Serial.print(MINOR, DEC);
+        Serial.print(".");
+        Serial.print(PATCH, DEC);
+        Serial.print("-g");
+        Serial.print(COMMIT, HEX);
+        Serial.println(")");
         break;
       case 'a':
         led = Serial.read();

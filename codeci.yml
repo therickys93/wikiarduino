@@ -1,4 +1,5 @@
 os: ubuntu14
 language: arduino
 script:
+  - bash generate_version_file.sh
   - arduino-builder -libraries ./lib -verbose -build-options-file $ARDUINO_PATH/build.options.json src/src.ino
