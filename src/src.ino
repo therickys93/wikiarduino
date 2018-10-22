@@ -94,10 +94,18 @@ void loop() {
   }
   if (Serial.available() > 0) {
     int led;
-    int command = Serial.read();
+    Serial.readBytesUntil(13, buffer, BUFFER_LENGTH);
     Serial.print("ricevuto: ");
-    Serial.println(command, DEC);
-    switch(command){
+    Serial.println(buffer);
+    switch(buffer[0]){
+      case 'h':
+        Serial.println("Lista dei comandi: ");
+        Serial.println("h      --> mosta questo messaggio.");
+        Serial.println("a<arg> --> accende led in posizione <arg>.");
+        Serial.println("s<arg> --> spegne led in posizione <arg>.");
+        Serial.println("o<arg> --> apre/chiude led in posizione <arg>.");
+        Serial.println("v      --> mostra la versione del codice.");
+        break;
       case 'v':
         Serial.print("WikiArduino: (");
         Serial.print(MAJOR, DEC);
@@ -110,31 +118,28 @@ void loop() {
         Serial.println(")");
         break;
       case 'a':
-        led = Serial.read();
-        if(led - 48 >= 2 && led - 48 <= 9){
+        if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
           Serial.print("accendi led: ");
-          Serial.println(led - 48, DEC);
-          digitalWrite(led - 48, HIGH);
+          Serial.println(buffer[1] - 48, DEC);
+          digitalWrite(buffer[1] - 48, HIGH);
         }
         break;
       case 's':
-        led = Serial.read();
-        if(led - 48 >= 2 && led - 48 <= 9){
+        if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
           Serial.print("spegni led: ");
-          Serial.println(led - 48, DEC);
-          digitalWrite(led - 48, LOW);
+          Serial.println(buffer[1] - 48, DEC);
+          digitalWrite(buffer[1] - 48, LOW);
         }
         break;
       case 'o':
-        led = Serial.read();
-        if(led - 48 >= 2 && led - 48 <= 9){
+        if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
           Serial.println("apri/chiudi led: ");
-          Serial.print(led - 48, DEC);
-          digitalWrite(led - 48, LOW);
+          Serial.print(buffer[1] - 48, DEC);
+          digitalWrite(buffer[1] - 48, LOW);
           delay(100);
-          digitalWrite(led - 48, HIGH);
+          digitalWrite(buffer[1] - 48, HIGH);
           delay(100);
-          digitalWrite(led - 48, LOW);
+          digitalWrite(buffer[1] - 48, LOW);
         }
         break; 
       default:
