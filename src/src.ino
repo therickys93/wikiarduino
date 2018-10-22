@@ -21,6 +21,7 @@ void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
   Serial.begin(57600);
   delay(1000);
+  Serial.setTimeout(5000);
   Serial.print("WikiArduino in ascolto @ ");
   Serial.println(Ethernet.localIP());
 
@@ -133,8 +134,8 @@ void loop() {
         break;
       case 'o':
         if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
-          Serial.println("apri/chiudi led: ");
-          Serial.print(buffer[1] - 48, DEC);
+          Serial.print("apri/chiudi led: ");
+          Serial.println(buffer[1] - 48, DEC);
           digitalWrite(buffer[1] - 48, LOW);
           delay(100);
           digitalWrite(buffer[1] - 48, HIGH);
