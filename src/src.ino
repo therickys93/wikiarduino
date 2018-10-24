@@ -2,6 +2,7 @@
 #include <Ethernet.h>
 #include <redisClient.h>
 #include "version.h"
+#include <Stream.h>
 
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
@@ -16,7 +17,50 @@ RedisClient client(server);
 char key[10] = "arduino";
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
-  
+// char serial_buffer[BUFFER_LENGTH];
+// int  serial_idx = 0;
+
+static int timeout() {
+  int c;
+  int _startMillis = millis();
+    do {
+        c = Serial.read();
+        if(c >= 0)
+            return c;
+        yield();
+    } while(millis() - _startMillis < 1000);
+    return -1;     // -1 indicates timeout
+}
+
+String readSerialString(char terminator) {
+    String ret;
+    int c = timeout();
+    Serial.print((char)c);
+    while(c >= 0 && c != terminator) {
+        ret += (char) c;
+        c = timeout();
+        Serial.print((char)c);
+    }
+    return ret;
+}
+
+/*
+int readSerialString() {
+    int tmp    = 0;
+    serial_idx = 0; 
+    if((Serial.available() > 0)) {
+      delay(100);
+       while ((tmp != 13 || tmp != 10)){ 
+          tmp = Serial.read();
+          Serial.print((char)tmp);
+          serial_buffer[serial_idx] = tmp;
+          serial_idx++;
+       }
+    }
+    return serial_idx; 
+}
+*/
+
 void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
   Serial.begin(57600);
@@ -105,10 +149,10 @@ void loop() {
   }
   if (Serial.available() > 0) {
     int led;
-    sprintf(buffer, "");
-    Serial.readBytesUntil(13, buffer, BUFFER_LENGTH);
-    Serial.println();
-    switch(buffer[0]){
+    // Serial.print((char)Serial.read());
+    // String serial_buffer = Serial.readStringUntil(13);
+    String serial_buffer = readSerialString(13);
+    switch(serial_buffer[0]){
       case 'h':
         Serial.println("Lista dei comandi: ");
         Serial.println("h      --> mosta questo messaggio.");
@@ -129,28 +173,28 @@ void loop() {
         Serial.println(")");
         break;
       case 'a':
-        if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("accendi led: ");
-          Serial.println(buffer[1] - 48, DEC);
-          digitalWrite(buffer[1] - 48, HIGH);
+          Serial.println(serial_buffer[1] - 48, DEC);
+          digitalWrite(serial_buffer[1] - 48, HIGH);
         }
         break;
       case 's':
-        if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("spegni led: ");
-          Serial.println(buffer[1] - 48, DEC);
-          digitalWrite(buffer[1] - 48, LOW);
+          Serial.println(serial_buffer[1] - 48, DEC);
+          digitalWrite(serial_buffer[1] - 48, LOW);
         }
         break;
       case 'o':
-        if(buffer[1] - 48 >= 2 && buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("apri/chiudi led: ");
-          Serial.println(buffer[1] - 48, DEC);
-          digitalWrite(buffer[1] - 48, LOW);
+          Serial.println(serial_buffer[1] - 48, DEC);
+          digitalWrite(serial_buffer[1] - 48, LOW);
           delay(100);
-          digitalWrite(buffer[1] - 48, HIGH);
+          digitalWrite(serial_buffer[1] - 48, HIGH);
           delay(100);
-          digitalWrite(buffer[1] - 48, LOW);
+          digitalWrite(serial_buffer[1] - 48, LOW);
         }
         break; 
       default:
