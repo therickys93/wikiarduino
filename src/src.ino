@@ -50,8 +50,18 @@ void setup() {
     Serial.println("After resultBulk(buffer, BUFFER_LENGTH)");
     Serial.println(buffer);
   } else {
-    Serial.println("Start without internet and redis connection");
+    Serial.println("Partito senza una connessione internet");
   }
+  Serial.print("WikiArduino console: ");
+  Serial.print(MAJOR, DEC);
+  Serial.print(".");
+  Serial.print(MINOR, DEC);
+  Serial.print(".");
+  Serial.print(PATCH, DEC);
+  Serial.print("-g");
+  Serial.println(COMMIT, HEX);
+  Serial.println("Invia comando 'h' per una lista di comandi.");
+  Serial.print("> ");
 }
 
 void loop() {
@@ -95,9 +105,9 @@ void loop() {
   }
   if (Serial.available() > 0) {
     int led;
+    sprintf(buffer, "");
     Serial.readBytesUntil(13, buffer, BUFFER_LENGTH);
-    Serial.print("ricevuto: ");
-    Serial.println(buffer);
+    Serial.println();
     switch(buffer[0]){
       case 'h':
         Serial.println("Lista dei comandi: ");
@@ -146,5 +156,6 @@ void loop() {
       default:
         break;
     }
+    Serial.print("> ");
   }
 }
