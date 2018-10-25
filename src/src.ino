@@ -2,7 +2,6 @@
 #include <Ethernet.h>
 #include <redisClient.h>
 #include "version.h"
-#include <Stream.h>
 
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
@@ -17,8 +16,6 @@ RedisClient client(server);
 char key[10] = "arduino";
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
-// char serial_buffer[BUFFER_LENGTH];
-// int  serial_idx = 0;
 
 static int timeout() {
   int c;
@@ -29,7 +26,7 @@ static int timeout() {
             return c;
         yield();
     } while(millis() - _startMillis < 1000);
-    return -1;     // -1 indicates timeout
+    return -1;
 }
 
 String readSerialString(char terminator) {
@@ -43,23 +40,6 @@ String readSerialString(char terminator) {
     }
     return ret;
 }
-
-/*
-int readSerialString() {
-    int tmp    = 0;
-    serial_idx = 0; 
-    if((Serial.available() > 0)) {
-      delay(100);
-       while ((tmp != 13 || tmp != 10)){ 
-          tmp = Serial.read();
-          Serial.print((char)tmp);
-          serial_buffer[serial_idx] = tmp;
-          serial_idx++;
-       }
-    }
-    return serial_idx; 
-}
-*/
 
 void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
@@ -149,8 +129,6 @@ void loop() {
   }
   if (Serial.available() > 0) {
     int led;
-    // Serial.print((char)Serial.read());
-    // String serial_buffer = Serial.readStringUntil(13);
     String serial_buffer = readSerialString(13);
     switch(serial_buffer[0]){
       case 'h':
