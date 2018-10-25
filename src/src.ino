@@ -29,7 +29,7 @@ static int timeout() {
     return -1;
 }
 
-String readSerialString(char terminator) {
+static String readSerialString(char terminator) {
     String ret;
     int c = timeout();
     Serial.print((char)c);
@@ -57,21 +57,20 @@ void setup() {
   if(client.connect()){
     Serial.println("connect() -- ok");
   } else {
-    Serial.println("connect() -- FAILED");
+    Serial.println("connect() -- errore");
     redis_internet_ok = false;
   }
   if(redis_internet_ok){
-   Serial.println("After connect()");
+   Serial.println("dopo connect()");
     if(client.GET(key)){
-     Serial.println("GET('arduino') -- ok");
+     Serial.println("GET(chiave) -- ok");
    } else {
-     Serial.println("GET('arduino') -- FAILED");  
+     Serial.println("GET(chiave) -- errore");
+     redis_internet_ok = false;
     }
-    Serial.println("After GET('arduino')");
     // the problem is at the line below!!!
     uint16_t result = client.resultBulk(buffer, BUFFER_LENGTH);
     Serial.println(result);
-    Serial.println("After resultBulk(buffer, BUFFER_LENGTH)");
     Serial.println(buffer);
   } else {
     Serial.println("Partito senza una connessione internet");
@@ -94,7 +93,8 @@ void loop() {
     if(client.GET(key)){
       Serial.println("GET() -- ok");
     } else {
-      Serial.println("GET() -- FAILED");  
+      Serial.println("GET() -- errore");
+      redis_internet_ok = false; 
     }
     client.resultBulk(buffer, BUFFER_LENGTH);
     Serial.println(buffer);
@@ -117,14 +117,14 @@ void loop() {
             client.sendArg(buffer);
             client.endSET();
           } else {
-            Serial.println("no right value");
+            Serial.println("valore non conosciuto");
           }
         }
       } else {
-        Serial.println("string not equals to led");
+        Serial.println("stringa o troppo lunga o troppo corta");
       }
     } else {
-      Serial.println("no value given");
+      Serial.println("nessun valore ricevuto");
     }
   }
   if (Serial.available() > 0) {
