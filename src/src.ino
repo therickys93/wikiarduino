@@ -16,11 +16,36 @@ RedisClient client(server);
 char key[10] = "arduino";
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
-  
+
+static int timeout() {
+  int c;
+  int _startMillis = millis();
+    do {
+        c = Serial.read();
+        if(c >= 0)
+            return c;
+        yield();
+    } while(millis() - _startMillis < 1000);
+    return -1;
+}
+
+static String readSerialString(char terminator) {
+    String ret;
+    int c = timeout();
+    Serial.print((char)c);
+    while(c >= 0 && c != terminator) {
+        ret += (char) c;
+        c = timeout();
+        Serial.print((char)c);
+    }
+    return ret;
+}
+
 void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
   Serial.begin(57600);
   delay(1000);
+  Serial.setTimeout(5000);
   Serial.print("WikiArduino in ascolto @ ");
   Serial.println(Ethernet.localIP());
 
@@ -32,25 +57,34 @@ void setup() {
   if(client.connect()){
     Serial.println("connect() -- ok");
   } else {
-    Serial.println("connect() -- FAILED");
+    Serial.println("connect() -- errore");
     redis_internet_ok = false;
   }
   if(redis_internet_ok){
-   Serial.println("After connect()");
+   Serial.println("dopo connect()");
     if(client.GET(key)){
-     Serial.println("GET('arduino') -- ok");
+     Serial.println("GET(chiave) -- ok");
    } else {
-     Serial.println("GET('arduino') -- FAILED");  
+     Serial.println("GET(chiave) -- errore");
+     redis_internet_ok = false;
     }
-    Serial.println("After GET('arduino')");
     // the problem is at the line below!!!
     uint16_t result = client.resultBulk(buffer, BUFFER_LENGTH);
     Serial.println(result);
-    Serial.println("After resultBulk(buffer, BUFFER_LENGTH)");
     Serial.println(buffer);
   } else {
-    Serial.println("Start without internet and redis connection");
+    Serial.println("Partito senza una connessione internet");
   }
+  Serial.print("WikiArduino console: ");
+  Serial.print(MAJOR, DEC);
+  Serial.print(".");
+  Serial.print(MINOR, DEC);
+  Serial.print(".");
+  Serial.print(PATCH, DEC);
+  Serial.print("-g");
+  Serial.println(COMMIT, HEX);
+  Serial.println("Invia comando 'h' per una lista di comandi.");
+  Serial.print("> ");
 }
 
 void loop() {
@@ -59,7 +93,8 @@ void loop() {
     if(client.GET(key)){
       Serial.println("GET() -- ok");
     } else {
-      Serial.println("GET() -- FAILED");  
+      Serial.println("GET() -- errore");
+      redis_internet_ok = false; 
     }
     client.resultBulk(buffer, BUFFER_LENGTH);
     Serial.println(buffer);
@@ -82,22 +117,28 @@ void loop() {
             client.sendArg(buffer);
             client.endSET();
           } else {
-            Serial.println("no right value");
+            Serial.println("valore non conosciuto");
           }
         }
       } else {
-        Serial.println("string not equals to led");
+        Serial.println("stringa o troppo lunga o troppo corta");
       }
     } else {
-      Serial.println("no value given");
+      Serial.println("nessun valore ricevuto");
     }
   }
   if (Serial.available() > 0) {
     int led;
-    int command = Serial.read();
-    Serial.print("ricevuto: ");
-    Serial.println(command, DEC);
-    switch(command){
+    String serial_buffer = readSerialString(13);
+    switch(serial_buffer[0]){
+      case 'h':
+        Serial.println("Lista dei comandi: ");
+        Serial.println("h      --> mosta questo messaggio.");
+        Serial.println("a<arg> --> accende led in posizione <arg>.");
+        Serial.println("s<arg> --> spegne led in posizione <arg>.");
+        Serial.println("o<arg> --> apre/chiude led in posizione <arg>.");
+        Serial.println("v      --> mostra la versione del codice.");
+        break;
       case 'v':
         Serial.print("WikiArduino: (");
         Serial.print(MAJOR, DEC);
@@ -110,35 +151,33 @@ void loop() {
         Serial.println(")");
         break;
       case 'a':
-        led = Serial.read();
-        if(led - 48 >= 2 && led - 48 <= 9){
+        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("accendi led: ");
-          Serial.println(led - 48, DEC);
-          digitalWrite(led - 48, HIGH);
+          Serial.println(serial_buffer[1] - 48, DEC);
+          digitalWrite(serial_buffer[1] - 48, HIGH);
         }
         break;
       case 's':
-        led = Serial.read();
-        if(led - 48 >= 2 && led - 48 <= 9){
+        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("spegni led: ");
-          Serial.println(led - 48, DEC);
-          digitalWrite(led - 48, LOW);
+          Serial.println(serial_buffer[1] - 48, DEC);
+          digitalWrite(serial_buffer[1] - 48, LOW);
         }
         break;
       case 'o':
-        led = Serial.read();
-        if(led - 48 >= 2 && led - 48 <= 9){
-          Serial.println("apri/chiudi led: ");
-          Serial.print(led - 48, DEC);
-          digitalWrite(led - 48, LOW);
+        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+          Serial.print("apri/chiudi led: ");
+          Serial.println(serial_buffer[1] - 48, DEC);
+          digitalWrite(serial_buffer[1] - 48, LOW);
           delay(100);
-          digitalWrite(led - 48, HIGH);
+          digitalWrite(serial_buffer[1] - 48, HIGH);
           delay(100);
-          digitalWrite(led - 48, LOW);
+          digitalWrite(serial_buffer[1] - 48, LOW);
         }
         break; 
       default:
         break;
     }
+    Serial.print("> ");
   }
 }
