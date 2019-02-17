@@ -13,7 +13,7 @@ byte arduino_ip[]  = {192, 168, 15, 210};
 IPAddress server(192, 168, 15, 12);
 RedisClient client(server);
 
-char key[10] = "arduino";
+char digital_key[10] = "arduino";
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
 
@@ -62,7 +62,7 @@ void setup() {
   }
   if(redis_internet_ok){
    Serial.println("dopo connect()");
-    if(client.GET(key)){
+    if(client.GET(digital_key)){
      Serial.println("GET(chiave) -- ok");
    } else {
      Serial.println("GET(chiave) -- errore");
@@ -90,7 +90,7 @@ void setup() {
 void loop() {
   if(redis_internet_ok){
     delay(500);
-    if(client.GET(key)){
+    if(client.GET(digital_key)){
       Serial.println("GET() -- ok");
     } else {
       Serial.println("GET() -- errore");
@@ -113,7 +113,7 @@ void loop() {
             delay(100);
             digitalWrite(index, LOW);
             buffer[index - LED_START_INDEX] = '0';
-            client.startSET(key);
+            client.startSET(digital_key);
             client.sendArg(buffer);
             client.endSET();
           } else {
