@@ -145,7 +145,15 @@ void loop() {
     }
     // send sensors data to redis server
     for(int i = 0; i < SENSORS_NUMBER; i++){
-      sprintf(buffer, "%d", analogRead(i));
+      if(0 == i){
+        // from temperature sensor
+        int reading = analogRead(i);  
+        float voltage = reading * 5.0;
+        voltage /= 1024.0;
+        sprintf(buffer, "%f", voltage);
+      } else {
+        sprintf(buffer, "%d", analogRead(i));
+      }
       client.startSET(keys[i]);
       client.sendArg(buffer);
       client.endSET();
