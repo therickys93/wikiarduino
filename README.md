@@ -10,3 +10,7 @@ Per uplodare il file .hex in arduino usare il seguente comando: ```avrdude -Cavr
 ## Interfaccia Seriale
 
 Per collegarsi all'interfaccia seriale usare il seguente comando: ```screen <device> 57600```
+
+## Sensore Temperatura
+
+Il sensore di temperatura va collegato al pin a0 e come input alla corrente a 5V.
