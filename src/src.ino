@@ -14,7 +14,7 @@ IPAddress server(192, 168, 15, 12);
 RedisClient client(server);
 
 char digital_key[10] = "arduino";
-char temp_key[15] = "";
+char a0_key[15] = "";
 char a1_key[15] = "";
 char a2_key[15] = "";
 char a3_key[15] = "";
@@ -59,7 +59,7 @@ void setup() {
     pinMode(index, OUTPUT);
   }
 
-  sprintf(temp_key, "%s_temp", digital_key);
+  sprintf(a0_key, "%s_a0", digital_key);
   sprintf(a1_key, "%s_a1", digital_key);
   sprintf(a2_key, "%s_a2", digital_key);
   sprintf(a3_key, "%s_a3", digital_key);
