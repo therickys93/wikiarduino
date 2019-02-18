@@ -6,6 +6,7 @@
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
 #define LED_START_INDEX 2
+#define SENSORS_NUMBER  6
 
 byte arduino_mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 byte arduino_ip[]  = {192, 168, 15, 210};
@@ -20,6 +21,9 @@ char a2_key[15] = "";
 char a3_key[15] = "";
 char a4_key[15] = "";
 char a5_key[15] = "";
+
+char keys[SENSORS_NUMBER] = {a0_key, a1_key, a2_key, a3_key, a4_key, a5_key};
+
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
 
@@ -138,6 +142,13 @@ void loop() {
       }
     } else {
       Serial.println("nessun valore ricevuto");
+    }
+    // send sensors data to redis server
+    for(int i = 0; i < SENSORS_NUMBER; i++){
+      sprintf(buffer, "%d", analogRead(i));
+      client.startSET(keys[i]);
+      client.sendArg(buffer);
+      client.endSET();
     }
   }
   if (Serial.available() > 0) {
