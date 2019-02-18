@@ -14,6 +14,12 @@ IPAddress server(192, 168, 15, 12);
 RedisClient client(server);
 
 char digital_key[10] = "arduino";
+char temp_key[15] = "";
+char a1_key[15] = "";
+char a2_key[15] = "";
+char a3_key[15] = "";
+char a4_key[15] = "";
+char a5_key[15] = "";
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
 
@@ -52,6 +58,13 @@ void setup() {
   for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
     pinMode(index, OUTPUT);
   }
+
+  sprintf(temp_key, "%s_temp", digital_key);
+  sprintf(a1_key, "%s_a1", digital_key);
+  sprintf(a2_key, "%s_a2", digital_key);
+  sprintf(a3_key, "%s_a3", digital_key);
+  sprintf(a4_key, "%s_a4", digital_key);
+  sprintf(a5_key, "%s_a5", digital_key);
   
   Serial.println("Pronto");
   if(client.connect()){
