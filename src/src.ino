@@ -6,6 +6,7 @@
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
 #define LED_START_INDEX 2
+#define SENSORS_NUMBER  6
 
 byte arduino_mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 byte arduino_ip[]  = {192, 168, 15, 210};
@@ -13,7 +14,16 @@ byte arduino_ip[]  = {192, 168, 15, 210};
 IPAddress server(192, 168, 15, 12);
 RedisClient client(server);
 
-char key[10] = "arduino";
+char digital_key[10] = "arduino";
+char a0_key[15] = "";
+char a1_key[15] = "";
+char a2_key[15] = "";
+char a3_key[15] = "";
+char a4_key[15] = "";
+char a5_key[15] = "";
+
+char keys[SENSORS_NUMBER] = {a0_key, a1_key, a2_key, a3_key, a4_key, a5_key};
+
 char buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
 
@@ -52,6 +62,13 @@ void setup() {
   for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
     pinMode(index, OUTPUT);
   }
+
+  sprintf(a0_key, "%s_a0", digital_key);
+  sprintf(a1_key, "%s_a1", digital_key);
+  sprintf(a2_key, "%s_a2", digital_key);
+  sprintf(a3_key, "%s_a3", digital_key);
+  sprintf(a4_key, "%s_a4", digital_key);
+  sprintf(a5_key, "%s_a5", digital_key);
   
   Serial.println("Pronto");
   if(client.connect()){
@@ -62,7 +79,7 @@ void setup() {
   }
   if(redis_internet_ok){
    Serial.println("dopo connect()");
-    if(client.GET(key)){
+    if(client.GET(digital_key)){
      Serial.println("GET(chiave) -- ok");
    } else {
      Serial.println("GET(chiave) -- errore");
@@ -90,7 +107,7 @@ void setup() {
 void loop() {
   if(redis_internet_ok){
     delay(500);
-    if(client.GET(key)){
+    if(client.GET(digital_key)){
       Serial.println("GET() -- ok");
     } else {
       Serial.println("GET() -- errore");
@@ -113,7 +130,7 @@ void loop() {
             delay(100);
             digitalWrite(index, LOW);
             buffer[index - LED_START_INDEX] = '0';
-            client.startSET(key);
+            client.startSET(digital_key);
             client.sendArg(buffer);
             client.endSET();
           } else {
@@ -125,6 +142,21 @@ void loop() {
       }
     } else {
       Serial.println("nessun valore ricevuto");
+    }
+    // send sensors data to redis server
+    for(int i = 0; i < SENSORS_NUMBER; i++){
+      if(0 == i){
+        // from temperature sensor
+        int reading = analogRead(i);  
+        float voltage = reading * 5.0;
+        voltage /= 1024.0;
+        sprintf(buffer, "%f", voltage);
+      } else {
+        sprintf(buffer, "%d", analogRead(i));
+      }
+      client.startSET(keys[i]);
+      client.sendArg(buffer);
+      client.endSET();
     }
   }
   if (Serial.available() > 0) {
