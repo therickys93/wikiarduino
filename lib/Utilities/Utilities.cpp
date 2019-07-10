@@ -18,5 +18,5 @@ void pinHigh(int pin)
 
 void pinLow(int pin)
 {
-    digitalWrite(pint, LOW);
+    digitalWrite(pin, LOW);
 }
