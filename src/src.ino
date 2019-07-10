@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <redisClient.h>
+#include <Utilities.h>
 #include "version.h"
 
 #define BUFFER_LENGTH   100
@@ -60,7 +61,7 @@ void setup() {
   Serial.println(Ethernet.localIP());
 
   for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
-    pinMode(index, OUTPUT);
+    pinOutput(index);
   }
 
   sprintf(a0_key, "%s_a0", digital_key);
@@ -120,15 +121,15 @@ void loop() {
         for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
           char value = buffer[index - LED_START_INDEX];
           if(value == '0'){
-            digitalWrite(index, LOW);
+            pinLow(index);
           } else if(value == '1'){
-            digitalWrite(index, HIGH);
+            pinHigh(index);
           } else if(value == '2'){
-            digitalWrite(index, LOW);
+            pinLow(index);
             delay(100);
-            digitalWrite(index, HIGH);
+            pinHigh(index);
             delay(100);
-            digitalWrite(index, LOW);
+            pinLow(index);
             buffer[index - LED_START_INDEX] = '0';
             client.startSET(digital_key);
             client.sendArg(buffer);
@@ -186,25 +187,25 @@ void loop() {
         if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("accendi led: ");
           Serial.println(serial_buffer[1] - 48, DEC);
-          digitalWrite(serial_buffer[1] - 48, HIGH);
+          pinHigh(serial_buffer[1] - 48);
         }
         break;
       case 's':
         if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("spegni led: ");
           Serial.println(serial_buffer[1] - 48, DEC);
-          digitalWrite(serial_buffer[1] - 48, LOW);
+          pinLow(serial_buffer[1] - 48);
         }
         break;
       case 'o':
         if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
           Serial.print("apri/chiudi led: ");
           Serial.println(serial_buffer[1] - 48, DEC);
-          digitalWrite(serial_buffer[1] - 48, LOW);
+          pinLow(serial_buffer[1] - 48);
           delay(100);
-          digitalWrite(serial_buffer[1] - 48, HIGH);
+          pinHigh(serial_buffer[1] - 48);
           delay(100);
-          digitalWrite(serial_buffer[1] - 48, LOW);
+          pinLow(serial_buffer[1] - 48);
         }
         break; 
       default:
