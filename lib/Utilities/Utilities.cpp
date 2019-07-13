@@ -20,3 +20,8 @@ void pinLow(int pin)
 {
     digitalWrite(pin, LOW);
 }
+
+int pinState(int pin)
+{
+    return digitalRead(pin);
+}
