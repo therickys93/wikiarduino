@@ -184,28 +184,28 @@ void loop() {
         Serial.println(")");
         break;
       case 'a':
-        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - '0' >= 2 && serial_buffer[1] - '0' <= 9){
           Serial.print("accendi led: ");
-          Serial.println(serial_buffer[1] - 48, DEC);
-          pinHigh(serial_buffer[1] - 48);
+          Serial.println(serial_buffer[1] - '0', DEC);
+          pinHigh(serial_buffer[1] - '0');
         }
         break;
       case 's':
-        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - '0' >= 2 && serial_buffer[1] - '0' <= 9){
           Serial.print("spegni led: ");
-          Serial.println(serial_buffer[1] - 48, DEC);
-          pinLow(serial_buffer[1] - 48);
+          Serial.println(serial_buffer[1] - '0', DEC);
+          pinLow(serial_buffer[1] - '0');
         }
         break;
       case 'o':
-        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - '0' >= 2 && serial_buffer[1] - '0' <= 9){
           Serial.print("apri/chiudi led: ");
-          Serial.println(serial_buffer[1] - 48, DEC);
-          pinLow(serial_buffer[1] - 48);
+          Serial.println(serial_buffer[1] - '0', DEC);
+          pinLow(serial_buffer[1] - '0');
           delay(100);
-          pinHigh(serial_buffer[1] - 48);
+          pinHigh(serial_buffer[1] - '0');
           delay(100);
-          pinLow(serial_buffer[1] - 48);
+          pinLow(serial_buffer[1] - '0');
         }
         break; 
       default:
