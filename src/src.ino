@@ -8,11 +8,11 @@
 #define LED_START_INDEX PIN_2
 #define SENSORS_NUMBER  6
 
-byte arduino_mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-byte arduino_ip[]  = {192, 168, 15, 210};
+byte arduino_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+byte arduino_ip_address[]  = {192, 168, 15, 210};
 
-IPAddress server(192, 168, 15, 12);
-RedisClient client(server);
+IPAddress redis_server(192, 168, 15, 12);
+RedisClient client(redis_server);
 
 char digital_key[10] = "arduino";
 char a0_key[15] = "";
@@ -52,7 +52,7 @@ static String readSerialString(char terminator) {
 }
 
 void setup() {
-  Ethernet.begin(arduino_mac, arduino_ip);
+  Ethernet.begin(arduino_mac_address, arduino_ip_address);
   Serial.begin(57600);
   delay(1000);
   Serial.setTimeout(5000);
