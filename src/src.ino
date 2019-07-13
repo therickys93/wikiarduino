@@ -6,6 +6,7 @@
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
 #define LED_START_INDEX PIN_2
+#define LED_STOP_INDEX  PIN_9
 #define SENSORS_NUMBER  6
 
 byte arduino_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -184,21 +185,21 @@ void loop() {
         Serial.println(")");
         break;
       case 'a':
-        if(serial_buffer[1] - '0' >= 2 && serial_buffer[1] - '0' <= 9){
+        if(serial_buffer[1] - '0' >= LED_START_INDEX && serial_buffer[1] - '0' <= LED_STOP_INDEX){
           Serial.print("accendi led: ");
           Serial.println(serial_buffer[1] - '0', DEC);
           pinHigh(serial_buffer[1] - '0');
         }
         break;
       case 's':
-        if(serial_buffer[1] - '0' >= 2 && serial_buffer[1] - '0' <= 9){
+        if(serial_buffer[1] - '0' >= LED_START_INDEX && serial_buffer[1] - '0' <= LED_STOP_INDEX){
           Serial.print("spegni led: ");
           Serial.println(serial_buffer[1] - '0', DEC);
           pinLow(serial_buffer[1] - '0');
         }
         break;
       case 'o':
-        if(serial_buffer[1] - '0' >= 2 && serial_buffer[1] - '0' <= 9){
+        if(serial_buffer[1] - '0' >= LED_START_INDEX && serial_buffer[1] - '0' <= LED_STOP_INDEX){
           Serial.print("apri/chiudi led: ");
           Serial.println(serial_buffer[1] - '0', DEC);
           pinLow(serial_buffer[1] - '0');
