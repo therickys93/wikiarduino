@@ -109,6 +109,7 @@ void loop() {
     delay(500);
     if(client.GET(digital_key)){
       Serial.println("GET() -- ok");
+      redis_internet_ok = true;
     } else {
       Serial.println("GET() -- errore");
       redis_internet_ok = false; 
