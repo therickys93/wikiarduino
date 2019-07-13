@@ -6,7 +6,7 @@
 
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
-#define LED_START_INDEX 2
+#define LED_START_INDEX PIN_2
 #define SENSORS_NUMBER  6
 
 byte arduino_mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};

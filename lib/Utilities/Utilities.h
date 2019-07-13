@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "bits.h"
+#include "pins.h"
 
 void pinInput(int pin);
 void pinOutput(int pin);
