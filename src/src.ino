@@ -1,18 +1,19 @@
-#include <SPI.h>
 #include <Ethernet.h>
 #include <redisClient.h>
+#include <Utilities.h>
 #include "version.h"
 
 #define BUFFER_LENGTH   100
 #define NUMBER_OF_LED   8
-#define LED_START_INDEX 2
+#define LED_START_INDEX PIN_2
+#define LED_STOP_INDEX  PIN_9
 #define SENSORS_NUMBER  6
 
-byte arduino_mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-byte arduino_ip[]  = {192, 168, 15, 210};
+byte arduino_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+byte arduino_ip_address[]  = {192, 168, 15, 210};
 
-IPAddress server(192, 168, 15, 12);
-RedisClient client(server);
+IPAddress redis_server(192, 168, 15, 12);
+RedisClient redis_client(redis_server);
 
 char digital_key[10] = "arduino";
 char a0_key[15] = "";
@@ -24,7 +25,7 @@ char a5_key[15] = "";
 
 char keys[SENSORS_NUMBER] = {a0_key, a1_key, a2_key, a3_key, a4_key, a5_key};
 
-char buffer[BUFFER_LENGTH];
+char redis_buffer[BUFFER_LENGTH];
 bool redis_internet_ok = true;
 
 static int timeout() {
@@ -52,7 +53,7 @@ static String readSerialString(char terminator) {
 }
 
 void setup() {
-  Ethernet.begin(arduino_mac, arduino_ip);
+  Ethernet.begin(arduino_mac_address, arduino_ip_address);
   Serial.begin(57600);
   delay(1000);
   Serial.setTimeout(5000);
@@ -60,7 +61,7 @@ void setup() {
   Serial.println(Ethernet.localIP());
 
   for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
-    pinMode(index, OUTPUT);
+    pinOutput(index);
   }
 
   sprintf(a0_key, "%s_a0", digital_key);
@@ -71,7 +72,7 @@ void setup() {
   sprintf(a5_key, "%s_a5", digital_key);
   
   Serial.println("Pronto");
-  if(client.connect()){
+  if(redis_client.connect()){
     Serial.println("connect() -- ok");
   } else {
     Serial.println("connect() -- errore");
@@ -79,16 +80,16 @@ void setup() {
   }
   if(redis_internet_ok){
    Serial.println("dopo connect()");
-    if(client.GET(digital_key)){
+    if(redis_client.GET(digital_key)){
      Serial.println("GET(chiave) -- ok");
    } else {
      Serial.println("GET(chiave) -- errore");
      redis_internet_ok = false;
     }
     // the problem is at the line below!!!
-    uint16_t result = client.resultBulk(buffer, BUFFER_LENGTH);
+    uint16_t result = redis_client.resultBulk(redis_buffer, BUFFER_LENGTH);
     Serial.println(result);
-    Serial.println(buffer);
+    Serial.println(redis_buffer);
   } else {
     Serial.println("Partito senza una connessione internet");
   }
@@ -107,32 +108,33 @@ void setup() {
 void loop() {
   if(redis_internet_ok){
     delay(500);
-    if(client.GET(digital_key)){
+    if(redis_client.GET(digital_key)){
       Serial.println("GET() -- ok");
+      redis_internet_ok = true;
     } else {
       Serial.println("GET() -- errore");
       redis_internet_ok = false; 
     }
-    client.resultBulk(buffer, BUFFER_LENGTH);
-    Serial.println(buffer);
-    if(strlen(buffer) > 0){
-      if(strlen(buffer) == NUMBER_OF_LED){
+    redis_client.resultBulk(redis_buffer, BUFFER_LENGTH);
+    Serial.println(redis_buffer);
+    if(strlen(redis_buffer) > 0){
+      if(strlen(redis_buffer) == NUMBER_OF_LED){
         for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
-          char value = buffer[index - LED_START_INDEX];
+          char value = redis_buffer[index - LED_START_INDEX];
           if(value == '0'){
-            digitalWrite(index, LOW);
+            pinLow(index);
           } else if(value == '1'){
-            digitalWrite(index, HIGH);
+            pinHigh(index);
           } else if(value == '2'){
-            digitalWrite(index, LOW);
+            pinLow(index);
             delay(100);
-            digitalWrite(index, HIGH);
+            pinHigh(index);
             delay(100);
-            digitalWrite(index, LOW);
-            buffer[index - LED_START_INDEX] = '0';
-            client.startSET(digital_key);
-            client.sendArg(buffer);
-            client.endSET();
+            pinLow(index);
+            redis_buffer[index - LED_START_INDEX] = '0';
+            redis_client.startSET(digital_key);
+            redis_client.sendArg(redis_buffer);
+            redis_client.endSET();
           } else {
             Serial.println("valore non conosciuto");
           }
@@ -150,13 +152,13 @@ void loop() {
         int reading = analogRead(i);  
         float voltage = reading * 5.0;
         voltage /= 1024.0;
-        sprintf(buffer, "%f", voltage);
+        sprintf(redis_buffer, "%f", voltage);
       } else {
-        sprintf(buffer, "%d", analogRead(i));
+        sprintf(redis_buffer, "%d", analogRead(i));
       }
-      client.startSET(keys[i]);
-      client.sendArg(buffer);
-      client.endSET();
+      redis_client.startSET(keys[i]);
+      redis_client.sendArg(redis_buffer);
+      redis_client.endSET();
     }
   }
   if (Serial.available() > 0) {
@@ -183,28 +185,28 @@ void loop() {
         Serial.println(")");
         break;
       case 'a':
-        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - '0' >= LED_START_INDEX && serial_buffer[1] - '0' <= LED_STOP_INDEX){
           Serial.print("accendi led: ");
-          Serial.println(serial_buffer[1] - 48, DEC);
-          digitalWrite(serial_buffer[1] - 48, HIGH);
+          Serial.println(serial_buffer[1] - '0', DEC);
+          pinHigh(serial_buffer[1] - '0');
         }
         break;
       case 's':
-        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - '0' >= LED_START_INDEX && serial_buffer[1] - '0' <= LED_STOP_INDEX){
           Serial.print("spegni led: ");
-          Serial.println(serial_buffer[1] - 48, DEC);
-          digitalWrite(serial_buffer[1] - 48, LOW);
+          Serial.println(serial_buffer[1] - '0', DEC);
+          pinLow(serial_buffer[1] - '0');
         }
         break;
       case 'o':
-        if(serial_buffer[1] - 48 >= 2 && serial_buffer[1] - 48 <= 9){
+        if(serial_buffer[1] - '0' >= LED_START_INDEX && serial_buffer[1] - '0' <= LED_STOP_INDEX){
           Serial.print("apri/chiudi led: ");
-          Serial.println(serial_buffer[1] - 48, DEC);
-          digitalWrite(serial_buffer[1] - 48, LOW);
+          Serial.println(serial_buffer[1] - '0', DEC);
+          pinLow(serial_buffer[1] - '0');
           delay(100);
-          digitalWrite(serial_buffer[1] - 48, HIGH);
+          pinHigh(serial_buffer[1] - '0');
           delay(100);
-          digitalWrite(serial_buffer[1] - 48, LOW);
+          pinLow(serial_buffer[1] - '0');
         }
         break; 
       default:
