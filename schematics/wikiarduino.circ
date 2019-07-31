@@ -108,6 +108,12 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <comp lib="6" loc="(606,629)" name="Text">
       <a name="text" val="gli altri pin invece restituiscono semplicemente il valore grezzo"/>
     </comp>
+    <comp lib="6" loc="(547,461)" name="Text">
+      <a name="text" val="il numero sotto il pin è il numero del pin sulla board di arduino"/>
+    </comp>
+    <comp lib="6" loc="(524,528)" name="Text">
+      <a name="text" val="pin 2 rappresenta il valore salvato"/>
+    </comp>
     <comp lib="0" loc="(270,460)" name="Pin">
       <a name="facing" val="north"/>
       <a name="tristate" val="false"/>
@@ -133,9 +139,6 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <comp lib="0" loc="(230,630)" name="Pin">
       <a name="facing" val="north"/>
       <a name="tristate" val="false"/>
-    </comp>
-    <comp lib="6" loc="(552,491)" name="Text">
-      <a name="text" val="il numero sotto il pin è il numero del pin sulla board di arduino"/>
     </comp>
     <comp lib="6" loc="(621,580)" name="Text">
       <a name="text" val="collegamento con i sensori ... il pin a0 gestisce unicamente il sensore di temperatura"/>
@@ -192,6 +195,9 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
       <a name="label" val="a0"/>
       <a name="labelloc" val="north"/>
     </comp>
+    <comp lib="6" loc="(522,546)" name="Text">
+      <a name="text" val="pin 5-6-7 rappresentano l'indirizzo"/>
+    </comp>
     <comp lib="2" loc="(210,290)" name="Decoder">
       <a name="select" val="3"/>
       <a name="enable" val="false"/>
@@ -208,6 +214,9 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
       <a name="tristate" val="false"/>
       <a name="label" val="2"/>
       <a name="labelloc" val="south"/>
+    </comp>
+    <comp lib="6" loc="(521,487)" name="Text">
+      <a name="text" val="pin 3 rappresenta il clock"/>
     </comp>
     <comp lib="6" loc="(602,603)" name="Text">
       <a name="text" val="quindi contiene al suo interno già la conversione in temperatura"/>
@@ -229,6 +238,9 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
       <a name="tristate" val="false"/>
       <a name="label" val="3"/>
       <a name="labelloc" val="south"/>
+    </comp>
+    <comp lib="6" loc="(524,509)" name="Text">
+      <a name="text" val="pin 4 rappresenta il nuovo dato"/>
     </comp>
     <comp lib="0" loc="(190,460)" name="Pin">
       <a name="facing" val="north"/>
