@@ -5,8 +5,6 @@
 #include "version.h"
 
 #define BUFFER_LENGTH   100
-#define LED_START_INDEX PIN_2
-#define LED_STOP_INDEX  PIN_9
 #define SENSORS_NUMBER  6
 
 byte arduino_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};

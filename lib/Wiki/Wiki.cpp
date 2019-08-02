@@ -16,6 +16,7 @@ int executeRequest(char *buffer)
             switch_on_led(index);
             delay(100);
             switch_off_led(index);
+            buffer[index] = '0';
         } else {
             return 1;
         }
