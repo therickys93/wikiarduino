@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project source="2.7.1" version="1.0">
 This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
-<lib desc="#Wiring" name="0"/>
+<lib desc="#Wiring" name="0">
+    <tool name="Splitter">
+      <a name="fanout" val="8"/>
+      <a name="incoming" val="8"/>
+    </tool>
+  </lib>
   <lib desc="#Gates" name="1"/>
   <lib desc="#Plexers" name="2"/>
   <lib desc="#Arithmetic" name="3"/>
@@ -72,7 +77,6 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <wire from="(210,560)" to="(210,630)"/>
     <wire from="(560,110)" to="(580,110)"/>
     <wire from="(230,560)" to="(230,630)"/>
-    <wire from="(440,210)" to="(490,210)"/>
     <wire from="(210,440)" to="(230,440)"/>
     <wire from="(560,110)" to="(560,130)"/>
     <wire from="(100,160)" to="(340,160)"/>
@@ -85,6 +89,7 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <wire from="(210,350)" to="(210,390)"/>
     <wire from="(550,100)" to="(560,100)"/>
     <wire from="(520,110)" to="(520,130)"/>
+    <wire from="(440,150)" to="(490,150)"/>
     <wire from="(300,200)" to="(300,210)"/>
     <wire from="(290,560)" to="(290,630)"/>
     <wire from="(250,200)" to="(300,200)"/>
@@ -97,6 +102,7 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <wire from="(510,120)" to="(510,130)"/>
     <wire from="(530,100)" to="(530,130)"/>
     <wire from="(580,90)" to="(580,110)"/>
+    <wire from="(440,150)" to="(440,210)"/>
     <wire from="(310,560)" to="(310,630)"/>
     <wire from="(520,100)" to="(530,100)"/>
     <wire from="(500,90)" to="(500,110)"/>
@@ -109,7 +115,6 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <wire from="(340,230)" to="(370,230)"/>
     <wire from="(570,120)" to="(570,130)"/>
     <wire from="(310,430)" to="(310,460)"/>
-    <wire from="(490,150)" to="(490,210)"/>
     <wire from="(230,450)" to="(230,460)"/>
     <wire from="(310,200)" to="(310,420)"/>
     <wire from="(540,90)" to="(540,130)"/>
@@ -149,14 +154,6 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     </comp>
     <comp lib="5" loc="(600,90)" name="LED">
       <a name="facing" val="south"/>
-    </comp>
-    <comp lib="0" loc="(490,150)" name="Splitter">
-      <a name="facing" val="north"/>
-      <a name="fanout" val="8"/>
-      <a name="incoming" val="8"/>
-      <a name="appear" val="right"/>
-      <a name="bit0" val="7"/>
-      <a name="bit7" val="0"/>
     </comp>
     <comp lib="0" loc="(230,560)" name="Pin">
       <a name="facing" val="north"/>
@@ -285,6 +282,12 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     </comp>
     <comp lib="6" loc="(606,629)" name="Text">
       <a name="text" val="gli altri pin invece restituiscono semplicemente il valore grezzo"/>
+    </comp>
+    <comp lib="0" loc="(490,150)" name="Splitter">
+      <a name="facing" val="north"/>
+      <a name="fanout" val="8"/>
+      <a name="incoming" val="8"/>
+      <a name="appear" val="right"/>
     </comp>
     <comp lib="5" loc="(100,160)" name="Button">
       <a name="label" val="Reset Button"/>
