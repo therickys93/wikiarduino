@@ -1,3 +1,6 @@
+#ifndef _UTILITIES_H
+#define _UTILITIES_H
+
 #include "Arduino.h"
 #include "bits.h"
 #include "pins.h"
@@ -9,3 +12,5 @@ void pinHigh(int pin);
 void pinLow(int pin);
 
 int pinState(int pin);
+
+#endif

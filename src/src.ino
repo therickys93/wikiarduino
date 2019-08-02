@@ -1,10 +1,10 @@
 #include <Ethernet.h>
 #include <redisClient.h>
 #include <Utilities.h>
+#include <Wiki.h>
 #include "version.h"
 
 #define BUFFER_LENGTH   100
-#define NUMBER_OF_LED   8
 #define LED_START_INDEX PIN_2
 #define LED_STOP_INDEX  PIN_9
 #define SENSORS_NUMBER  6
