@@ -117,26 +117,10 @@ void loop() {
     Serial.println(redis_buffer);
     if(strlen(redis_buffer) > 0){
       if(strlen(redis_buffer) == NUMBER_OF_LED){
-        for(int index = LED_START_INDEX; index < (LED_START_INDEX + NUMBER_OF_LED); index++){
-          char value = redis_buffer[index - LED_START_INDEX];
-          if(value == '0'){
-            pinLow(index);
-          } else if(value == '1'){
-            pinHigh(index);
-          } else if(value == '2'){
-            pinLow(index);
-            delay(100);
-            pinHigh(index);
-            delay(100);
-            pinLow(index);
-            redis_buffer[index - LED_START_INDEX] = '0';
-            redis_client.startSET(digital_key);
-            redis_client.sendArg(redis_buffer);
-            redis_client.endSET();
-          } else {
-            Serial.println("valore non conosciuto");
-          }
-        }
+        executeRequest(redis_buffer);
+        redis_client.startSET(digital_key);
+        redis_client.sendArg(redis_buffer);
+        redis_client.endSET();
       } else {
         Serial.println("stringa o troppo lunga o troppo corta");
       }
